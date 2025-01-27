@@ -2,6 +2,7 @@ package br.com.compass.form;
 
 import br.com.compass.model.User;
 import br.com.compass.utils.UserValidator;
+import br.com.compass.utils.JbcryptPasswordHasher;
 import java.util.Scanner;
 
 public class UserFormHandler {
@@ -42,7 +43,9 @@ public class UserFormHandler {
             password = scanner.next();
         }
 
-        return new User(cpf, password, name, dateOfBirth, phone);
+        String hashedPassword = JbcryptPasswordHasher.hashPassword(password);
+
+        return new User(cpf, hashedPassword, name, dateOfBirth, phone);
     }
 
     public static String[] loginForm(Scanner scanner) {
@@ -50,8 +53,8 @@ public class UserFormHandler {
         String cpf = scanner.next();
 
         System.out.println("Enter Password:");
-        String password = scanner.next();
+        String plainPassword = scanner.next();
 
-        return new String[]{cpf, password};
+        return new String[]{cpf, plainPassword};
     }
 }

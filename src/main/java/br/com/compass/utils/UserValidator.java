@@ -23,6 +23,9 @@ public class UserValidator {
         if (name == null || name.isEmpty()) {
             System.out.println("Name required.");
             return false;
+        } else if (name.length() > 100) {
+            System.out.println("Name should not exceed 100 characters.");
+            return false;
         } else if (!name.matches("^[\\p{L}\\s]+$")) {
             System.out.println("Name should only contain letters and spaces.");
             return false;
@@ -36,8 +39,10 @@ public class UserValidator {
         if (password == null || password.length() < 6) {
             System.out.println("Password should have at least 6 characters.");
             return false;
-        }
-        else {
+        } else if (password.length() > 20) {
+            System.out.println("Password should not exceed 20 characters.");
+            return false;
+        } else {
             return true;
         }
     }

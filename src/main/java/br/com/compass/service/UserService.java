@@ -3,7 +3,7 @@ package br.com.compass.service;
 import br.com.compass.model.User;
 import br.com.compass.dao.UserDAO;
 import br.com.compass.utils.UserValidator;
-import br.com.compass.utils.Argon2PasswordHasher;
+import br.com.compass.utils.JbcryptPasswordHasher;
 
 public class UserService {
 
@@ -13,26 +13,23 @@ public class UserService {
         this.userDAO = userDAO;
     }
 
-    public boolean createUser(String cpf,
-                              String name,
-                              String plainPassword,
-                              String phoneNumber,
-                              String dateOfBirth) {
+    public boolean saveUser (User user, String plainPassword) {
 
-        boolean isValidUser = UserValidator.isValidCPF(cpf) &&
-                UserValidator.isValidName(name) &&
-                UserValidator.isValidPassword(plainPassword) &&
-                UserValidator.isValidPhoneNumber(phoneNumber) &&
-                UserValidator.isValidDateOfBirth(dateOfBirth);
+        String hashedPassword = JbcryptPasswordHasher.hashPassword(plainPassword);
 
-        if (isValidUser) {
-            String hashedPassword = Argon2PasswordHasher.hashPassword(plainPassword);
-            User user = new User(cpf, hashedPassword, name, dateOfBirth, phoneNumber);
-
+        if (isValidUser(user)) {
             return userDAO.createUser(user);
         } else {
             System.out.println("Error: User data is invalid.");
             return false;
         }
+    }
+
+    private boolean isValidUser(User user) {
+        return UserValidator.isValidCPF(user.getCpf()) &&
+                UserValidator.isValidName(user.getName()) &&
+                UserValidator.isValidHashedPassword(user.getHashedPassword()) &&
+                UserValidator.isValidPhoneNumber(user.getPhoneNumber()) &&
+                UserValidator.isValidDateOfBirth(user.getDateOfBirth());
     }
 }

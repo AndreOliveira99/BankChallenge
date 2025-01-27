@@ -28,8 +28,6 @@ public class App {
             System.out.print("Choose an option: ");
 
             int option = scanner.nextInt();
-            String cpf;
-            String password;
 
             switch (option) {
                 case 1:

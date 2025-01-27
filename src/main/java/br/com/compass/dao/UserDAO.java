@@ -2,6 +2,7 @@ package br.com.compass.dao;
 
 import br.com.compass.model.User;
 import br.com.compass.database.DatabaseConnection;
+import br.com.compass.utils.JbcryptPasswordHasher;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,17 +31,24 @@ public class UserDAO {
     }
 
     // Authenticate a user based on CPF and password
-    public boolean authenticate(String cpf, String hashedPassword) {
-        String sql = "SELECT * FROM users WHERE cpf = ? AND hashed_password = ?";
+    public boolean authenticate(String cpf, String plainPassword) {
+        String sql = "SELECT hashed_password FROM users WHERE cpf = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
+            // Perform Database Query
             statement.setString(1, cpf);
-            statement.setString(2, hashedPassword);
-
             ResultSet resultSet = statement.executeQuery();
-            return resultSet.next(); // Returns true if a match is found
+
+            // If CPF found compare password
+            if (resultSet.next()) {
+                String storedHashedPassword = resultSet.getString("hashed_password");
+                return JbcryptPasswordHasher.verifyPassword(plainPassword, storedHashedPassword);
+            }
+
+            // Else, returns false
+            return false;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

@@ -1,11 +1,11 @@
 package br.com.compass.model;
 
 public class User {
-    private String cpf;
-    private String hashedPassword;
-    private String name;
-    private String dateOfBirth;
-    private String phoneNumber;
+    private final String cpf;
+    private final String hashedPassword;
+    private final String name;
+    private final String dateOfBirth;
+    private final String phoneNumber;
 
     // Constructor
     public User(String cpf, String hashedPassword, String name, String dateOfBirth, String phoneNumber) {

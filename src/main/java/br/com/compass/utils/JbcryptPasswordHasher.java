@@ -1,16 +1,15 @@
 package br.com.compass.utils;
-import com.password4j.Password;
 
-public class Argon2PasswordHasher {
+import org.mindrot.jbcrypt.BCrypt;
 
+public class JbcryptPasswordHasher {
     // Hash the password
     public static String hashPassword(String plainPassword) {
-        return Password.hash(plainPassword).withArgon2().getResult();
+        return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
     }
 
     // Verify the password
     public static boolean verifyPassword(String plainPassword, String hashedPassword) {
-        return Password.check(plainPassword, hashedPassword).withArgon2();
+        return BCrypt.checkpw(plainPassword, hashedPassword);
     }
-
 }
