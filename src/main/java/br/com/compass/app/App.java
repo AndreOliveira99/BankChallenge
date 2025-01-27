@@ -1,9 +1,11 @@
-package br.com.compass;
+package br.com.compass.app;
 
+import br.com.compass.dao.UserDAO;
+import br.com.compass.model.User;
+import br.com.compass.form.UserFormHandler;
 import java.util.Scanner;
 
 public class App {
-    
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -14,6 +16,7 @@ public class App {
     }
 
     public static void mainMenu(Scanner scanner) {
+        UserDAO userDAO = new UserDAO();
         boolean running = true;
 
         while (running) {
@@ -25,14 +28,36 @@ public class App {
             System.out.print("Choose an option: ");
 
             int option = scanner.nextInt();
+            String cpf;
+            String password;
 
             switch (option) {
                 case 1:
-                    bankMenu(scanner);
+                    System.out.println("Log in.");
+                    // Login
+                    String[] credentials = UserFormHandler.loginForm(scanner);
+                    boolean loginSuccessful = userDAO.authenticate(credentials[0], credentials[1]);
+
+                    if (loginSuccessful) {
+                        System.out.println("Login successful!");
+                        bankMenu(scanner);
+                    } else {
+                        System.out.println("Invalid CPF or password.");
+                        System.out.println("Please try again or select a different option");
+                        mainMenu(scanner);
+                    }
                     return;
                 case 2:
-                    // ToDo...
                     System.out.println("Account Opening.");
+                    // Create user
+                    User user = UserFormHandler.createUserForm(scanner);
+                    boolean createUserSuccessful = userDAO.createUser(user);
+
+                    if (createUserSuccessful) {
+                        System.out.println("User created successfully!");
+                    } else {
+                        System.out.println("Error creating user.");
+                    }
                     break;
                 case 0:
                     running = false;
