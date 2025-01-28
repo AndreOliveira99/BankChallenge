@@ -45,7 +45,7 @@ public class UserFormHandler {
 
         String hashedPassword = JbcryptPasswordHasher.hashPassword(password);
 
-        return new User(cpf, hashedPassword, name, dateOfBirth, phone);
+        return new User(cpf, hashedPassword, name, dateOfBirth, phone, null);
     }
 
     public static String[] loginForm(Scanner scanner) {

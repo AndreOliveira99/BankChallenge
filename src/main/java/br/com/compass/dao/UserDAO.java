@@ -54,4 +54,36 @@ public class UserDAO {
             return false;
         }
     }
+
+    // Query Database and retrieve User Object
+    public User getUserByCpf(String cpf) {
+        String sql = "SELECT * FROM users WHERE cpf = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            // Define o parâmetro CPF na query SQL
+            statement.setString(1, cpf);
+            ResultSet resultSet = statement.executeQuery();
+
+            // Se o resultado da consulta encontrar o CPF
+            if (resultSet.next()) {
+                // Cria e preenche um objeto User com os dados da consulta
+
+                return new User(resultSet.getString("cpf"),
+                        resultSet.getString("hashed_password"),
+                        resultSet.getString("name"),
+                        resultSet.getString("date_of_birth"),
+                        resultSet.getString("phone_number"),
+                        resultSet.getInt("user_id")
+                );
+            }
+
+            // Caso não encontre, retorna nulo
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null; // Caso haja exceção, também retorna nulo
+        }
+    }
 }

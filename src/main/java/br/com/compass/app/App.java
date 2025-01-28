@@ -1,6 +1,9 @@
 package br.com.compass.app;
 
 import br.com.compass.dao.UserDAO;
+import br.com.compass.dao.AccountDAO;
+import br.com.compass.form.AccountFormHandler;
+import br.com.compass.model.Account;
 import br.com.compass.model.User;
 import br.com.compass.form.UserFormHandler;
 import java.util.Scanner;
@@ -17,6 +20,7 @@ public class App {
 
     public static void mainMenu(Scanner scanner) {
         UserDAO userDAO = new UserDAO();
+        AccountDAO accountDAO = new AccountDAO();
         boolean running = true;
 
         while (running) {
@@ -31,7 +35,6 @@ public class App {
 
             switch (option) {
                 case 1:
-                    System.out.println("Log in.");
                     // Login
                     String[] credentials = UserFormHandler.loginForm(scanner);
                     boolean loginSuccessful = userDAO.authenticate(credentials[0], credentials[1]);
@@ -46,15 +49,17 @@ public class App {
                     }
                     return;
                 case 2:
-                    System.out.println("Account Opening.");
                     // Create user
                     User user = UserFormHandler.createUserForm(scanner);
                     boolean createUserSuccessful = userDAO.createUser(user);
 
-                    if (createUserSuccessful) {
-                        System.out.println("User created successfully!");
+                    Account account = AccountFormHandler.createAccountForm(scanner, user);
+                    boolean createAccountSuccessful = accountDAO.createAccount(account, user.getCpf());
+
+                    if (createUserSuccessful && createAccountSuccessful) {
+                        System.out.println("Account created successfully!");
                     } else {
-                        System.out.println("Error creating user.");
+                        System.out.println("Error creating account.");
                     }
                     break;
                 case 0:
