@@ -98,4 +98,55 @@ public class TransactionFormHandler {
         System.out.println("The current balance of account " + account.getAccountNumber() + " is: R$ " + df.format(account.getBalance()));
     }
 
+    public void transferForm(Scanner scanner, User user) {
+        System.out.println("Select your account:");
+        Account sourceAccount = AccountFormHandler.selectAccountForm(scanner, user);
+
+        System.out.print("Enter the target account's number: ");
+        String targetAccountNumber = scanner.next();
+        Account targetAccount = accountDAO.getAccountByNumber(targetAccountNumber);
+
+        if (targetAccount == null) {
+            System.out.println("Target account not found. Please check the account number and try again.");
+            return;
+        }
+
+        if (sourceAccount.getAccountNumber().equals(targetAccountNumber)) {
+            System.out.println("You cannot transfer to the same account.");
+            return;
+        }
+
+        System.out.print("Enter the amount to transfer: ");
+        double amount = 0;
+        boolean validAmount = false;
+
+        while (!validAmount) {
+            try {
+                String amountString = scanner.next();
+                if (amountString.matches("^\\d+(\\.\\d{1,2})?$")) {
+                    amount = Double.parseDouble(amountString);
+                    if (amount <= 0) {
+                        System.out.println("The amount must be greater than zero. Try again.");
+                    } else if (sourceAccount.getBalance() < amount) {
+                        System.out.println("Insufficient balance: " + sourceAccount.getBalance());
+                    } else {
+                        validAmount = true;
+                    }
+                } else {
+                    System.out.println("Invalid input. Please enter a valid amount.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid amount.");
+            }
+        }
+
+        boolean success = transactionDAO.transfer(sourceAccount.getAccountId(), targetAccount.getAccountId(), amount);
+
+        if (success) {
+            System.out.println("Transfer completed successfully!");
+        } else {
+            System.out.println("Transfer failed. Please try again.");
+        }
+    }
+
 }

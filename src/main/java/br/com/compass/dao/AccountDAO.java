@@ -61,4 +61,29 @@ public class AccountDAO {
         return accounts;
     }
 
+    public Account getAccountByNumber(String accountNumber) {
+        String sql = "SELECT * FROM accounts WHERE account_number = ?";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, accountNumber);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return new Account(
+                        resultSet.getInt("account_type_id"),
+                        resultSet.getDouble("account_balance"),
+                        resultSet.getString("account_number"),
+                        resultSet.getInt("user_id"),
+                        resultSet.getInt("account_id")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null; // Returns null if account not found
+    }
+
 }

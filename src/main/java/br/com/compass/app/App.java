@@ -109,8 +109,8 @@ public class App {
                     transactionHandler.checkBalanceForm(scanner, userLoggedIn);
                     break;
                 case 4:
-
                     System.out.println("Transfer.");
+                    transactionHandler.transferForm(scanner, userLoggedIn);
                     break;
                 case 5:
                     // ToDo...
