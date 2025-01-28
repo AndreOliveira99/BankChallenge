@@ -3,6 +3,7 @@ package br.com.compass.dao;
 import br.com.compass.model.User;
 import br.com.compass.database.DatabaseConnection;
 import br.com.compass.utils.JbcryptPasswordHasher;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -62,13 +63,11 @@ public class UserDAO {
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            // Define o parâmetro CPF na query SQL
             statement.setString(1, cpf);
             ResultSet resultSet = statement.executeQuery();
 
-            // Se o resultado da consulta encontrar o CPF
+
             if (resultSet.next()) {
-                // Cria e preenche um objeto User com os dados da consulta
 
                 return new User(resultSet.getString("cpf"),
                         resultSet.getString("hashed_password"),
@@ -79,11 +78,10 @@ public class UserDAO {
                 );
             }
 
-            // Caso não encontre, retorna nulo
             return null;
         } catch (SQLException e) {
             e.printStackTrace();
-            return null; // Caso haja exceção, também retorna nulo
+            return null;
         }
     }
 }
