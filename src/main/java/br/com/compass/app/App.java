@@ -113,13 +113,13 @@ public class App {
                     transactionHandler.transferForm(scanner, userLoggedIn);
                     break;
                 case 5:
-                    // ToDo...
+                    transactionHandler.getBankStatementForm(scanner, userLoggedIn);
                     System.out.println("Bank Statement.");
                     break;
                 case 0:
-                    // ToDo...
+                    mainMenu(scanner);
                     System.out.println("Exiting...");
-                    running = false;
+                    //running = false;
                     return;
                 default:
                     System.out.println("Invalid option! Please try again.");

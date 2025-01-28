@@ -1,5 +1,7 @@
 package br.com.compass.utils;
 
+import br.com.compass.dao.UserDAO;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -14,9 +16,14 @@ public class UserValidator {
             System.out.println("CPF should only contain digits. Ex: 12345678901");
             return false;
         }
-        else {
-            return true;
+
+        UserDAO userDAO = new UserDAO();
+        if (userDAO.getUserByCpf(cpf) != null) {
+            System.out.println("CPF already in use. Please use other CPF.");
+            return false;
         }
+
+        return true;
     }
 
     public static boolean isValidName(String name) {
@@ -29,8 +36,7 @@ public class UserValidator {
         } else if (!name.matches("^[\\p{L}\\s]+$")) {
             System.out.println("Name should only contain letters and spaces.");
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
@@ -51,8 +57,7 @@ public class UserValidator {
         if (password == null || password.isEmpty()) {
             System.out.println("Password cannot be empty.");
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
@@ -64,8 +69,7 @@ public class UserValidator {
         } else if (!phoneNumber.matches("\\d+")) {
             System.out.println("Phone number should only contain digits.");
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
@@ -86,8 +90,7 @@ public class UserValidator {
                 if (!informedDate.isBefore(eighteenYearsAgo) && !informedDate.isEqual(eighteenYearsAgo)) {
                     System.out.println("Date of Birth invalid. Required to be over 18 years old.");
                     return false; // Date is not at least 18 years in the past
-                }
-                else {
+                } else {
                     return true;
                 }
             } catch (DateTimeParseException e) {

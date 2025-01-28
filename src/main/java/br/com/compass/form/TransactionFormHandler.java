@@ -4,9 +4,11 @@ import br.com.compass.dao.TransactionDAO;
 import br.com.compass.dao.AccountDAO;
 import br.com.compass.model.Account;
 import br.com.compass.model.User;
+import br.com.compass.model.Transaction;
 
 import java.text.DecimalFormat;
 import java.util.Scanner;
+import java.util.List;
 
 public class TransactionFormHandler {
 
@@ -40,7 +42,7 @@ public class TransactionFormHandler {
                 System.out.println("Invalid input. Please enter a valid amount.");
             }
         }
-
+        System.out.println("Making deposit.");
         // Make deposit
         boolean success = transactionDAO.deposit(account.getAccountId(), amount);
 
@@ -147,6 +149,57 @@ public class TransactionFormHandler {
         } else {
             System.out.println("Transfer failed. Please try again.");
         }
+    }
+
+    public void getBankStatementForm(Scanner scanner, User user) {
+
+        Account account = AccountFormHandler.selectAccountForm(scanner, user);
+
+        System.out.println("Fetching bank statement for account: " + account.getAccountNumber());
+
+
+        List<Transaction> transactions = transactionDAO.getTransactionsForAccount(account.getAccountId());
+
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions found for this account.");
+            return;
+        }
+
+        System.out.println("======= Bank Statement =======");
+        System.out.println("Account Number: " + account.getAccountNumber());
+        System.out.println("-----------------------------------------");
+
+        for (Transaction transaction : transactions) {
+
+            String transactionType;
+            switch (transaction.getTransactionTypeId()) {
+                case 1:
+                    transactionType = "Withdraw";
+                    break;
+                case 2:
+                    transactionType = "Deposit";
+                    break;
+                case 3:
+                    transactionType = "Transfer";
+                    break;
+                default:
+                    transactionType = "Unknown";
+            }
+
+
+            String transactionDetails = String.format(
+                    "Transaction ID: %d | Type: %s | Source: %s | Destination: %s | Amount: %.2f | Date: %s",
+                    transaction.getTransactionId(),
+                    transactionType,
+                    transaction.getSourceAccountId() == account.getAccountId() ? "YOU" : "OTHER",
+                    transaction.getDestinationAccountId() == account.getAccountId() ? "YOU" : "OTHER",
+                    transaction.getAmount(),
+                    transaction.getTransactionDate()
+            );
+            System.out.println(transactionDetails);
+        }
+        System.out.println("-----------------------------------------");
+        System.out.println("=========================================");
     }
 
 }
