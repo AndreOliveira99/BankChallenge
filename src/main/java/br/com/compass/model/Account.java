@@ -33,7 +33,7 @@ public class Account {
         return userId;
     }
 
-    public int getAccountIdId() {
+    public int getAccountId() {
         return accountId;
     }
 }

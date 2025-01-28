@@ -6,6 +6,7 @@ import br.com.compass.form.AccountFormHandler;
 import br.com.compass.model.Account;
 import br.com.compass.model.User;
 import br.com.compass.form.UserFormHandler;
+import br.com.compass.form.TransactionFormHandler;
 import java.util.Scanner;
 
 public class App {
@@ -21,6 +22,10 @@ public class App {
     public static void mainMenu(Scanner scanner) {
         UserDAO userDAO = new UserDAO();
         AccountDAO accountDAO = new AccountDAO();
+
+        User userLoggedIn = null;
+        Account accountLoggedIn = null;
+
         boolean running = true;
 
         while (running) {
@@ -41,7 +46,8 @@ public class App {
 
                     if (loginSuccessful) {
                         System.out.println("Login successful!");
-                        bankMenu(scanner);
+                        userLoggedIn = userDAO.getUserByCpf(credentials[0]);
+                        bankMenu(scanner, userLoggedIn);
                     } else {
                         System.out.println("Invalid CPF or password.");
                         System.out.println("Please try again or select a different option");
@@ -58,6 +64,7 @@ public class App {
 
                     if (createUserSuccessful && createAccountSuccessful) {
                         System.out.println("Account created successfully!");
+                        System.out.println("Account number: " + account.getAccountNumber());
                     } else {
                         System.out.println("Error creating account.");
                     }
@@ -71,7 +78,7 @@ public class App {
         }
     }
 
-    public static void bankMenu(Scanner scanner) {
+    public static void bankMenu(Scanner scanner, User userLoggedIn) {
         boolean running = true;
 
         while (running) {
@@ -86,22 +93,23 @@ public class App {
             System.out.print("Choose an option: ");
 
             int option = scanner.nextInt();
+            TransactionFormHandler transactionHandler = new TransactionFormHandler();
 
             switch (option) {
                 case 1:
-                    // ToDo...
                     System.out.println("Deposit.");
+                    transactionHandler.depositForm(scanner, userLoggedIn);
                     break;
                 case 2:
-                    // ToDo...
                     System.out.println("Withdraw.");
+                    transactionHandler.withdrawForm(scanner, userLoggedIn);
                     break;
                 case 3:
-                    // ToDo...
                     System.out.println("Check Balance.");
+                    transactionHandler.checkBalanceForm(scanner, userLoggedIn);
                     break;
                 case 4:
-                    // ToDo...
+
                     System.out.println("Transfer.");
                     break;
                 case 5:

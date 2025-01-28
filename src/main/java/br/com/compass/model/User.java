@@ -6,7 +6,7 @@ public class User {
     private String name;
     private String dateOfBirth;
     private String phoneNumber;
-    private Integer userId;
+    private final Integer userId;
 
     // Constructor
     public User(String cpf, String hashedPassword, String name, String dateOfBirth, String phoneNumber, Integer userId) {
